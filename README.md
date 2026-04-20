@@ -2,7 +2,7 @@
 
 > Instant documentation fetcher for any developer service. One command — get the docs.
 
-Powered by [llms.txt](https://llmstxt.org/). Works as a **CLI**, **MCP server** (Claude Code, Cursor, Windsurf), and **Claude Code skill** (`/docs`).
+Powered by [llms.txt](https://llmstxt.org/). Works as a **CLI**, **MCP server** (Claude Code, Cursor, Windsurf), and **Claude Code hook** (`/docs`).
 
 ---
 
@@ -12,7 +12,7 @@ Powered by [llms.txt](https://llmstxt.org/). Works as a **CLI**, **MCP server** 
 npm install -g quickdocs
 ```
 
-Or run without installing:
+Or without installing:
 
 ```bash
 npx quickdocs stripe webhooks
@@ -22,68 +22,98 @@ npx quickdocs stripe webhooks
 
 ## CLI Usage
 
-### Fetch docs directly
-
 ```bash
-quickdocs stripe webhooks
+quickdocs stripe webhooks           # fetch docs — trimmed to relevant sections
 quickdocs nextjs app-router
 quickdocs supabase auth
 quickdocs react useEffect
 quickdocs vercel environment-variables
 ```
 
-### Interactive mode (no args → pick service + topic)
+### Interactive mode
 
 ```bash
 quickdocs
 ```
 
-Shows a list of all services → pick one → shows all topics → pick one → prints docs.
-
-### Browse topics for a service
-
-```bash
-quickdocs stripe --list
-quickdocs nextjs --list routing
-```
-
-### List all supported services
-
-```bash
-quickdocs list
-```
+Arrow-key picker → select service → select topic → docs printed.
 
 ### Options
 
 ```bash
+quickdocs stripe webhooks --full    # full doc, no trimming
 quickdocs stripe webhooks --fresh   # skip cache, fetch live
+quickdocs stripe --list             # browse all topics for a service
+quickdocs list                      # list all supported services
 quickdocs cache:clear               # clear ~/.quickdocs/cache/
+```
+
+---
+
+## Smart Trimming
+
+By default, quickdocs returns only the **relevant sections** for your topic — not the entire doc page.
+
+Splits the page by headings → scores each section against your query → returns top matches (~4000 chars).
+
+```bash
+quickdocs stripe webhooks           # relevant sections only
+quickdocs stripe webhooks --full    # full page
+```
+
+---
+
+## Claude Code Hook (`/docs`)
+
+Type `/docs` directly in Claude Code input. The hook pre-fetches docs and injects them into context — no AI tool calls needed.
+
+**Setup:**
+
+1. Add to `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "^/docs",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"/path/to/quickdocs/plugin/hooks/on-prompt.sh\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+2. Copy skill:
+
+```bash
+cp -r plugin/skill ~/.claude/skills/docs
+```
+
+**Usage:**
+
+```
+/docs stripe webhooks        → fetches + injects docs instantly
+/docs nextjs app-router
+/docs                        → shows all services
+/docs stripe                 → shows all stripe topics
 ```
 
 ---
 
 ## MCP Server (Claude Code / Cursor / Windsurf)
 
-Add to your project's `.mcp.json` or global MCP config:
-
-```json
-{
-  "mcpServers": {
-    "quickdocs": {
-      "command": "npx",
-      "args": ["-y", "quickdocs", "mcp"]
-    }
-  }
-}
-```
-
-**Claude Code:**
-
 ```bash
 claude mcp add-json quickdocs '{"command":"npx","args":["-y","quickdocs","mcp"]}'
 ```
 
-**Cursor** (`~/.cursor/mcp.json`), **Windsurf** (`~/.codeium/windsurf/mcp_config.json`):
+Or add to `.mcp.json`:
 
 ```json
 {
@@ -96,35 +126,16 @@ claude mcp add-json quickdocs '{"command":"npx","args":["-y","quickdocs","mcp"]}
 }
 ```
 
-### MCP Tools exposed
+**Cursor** → `~/.cursor/mcp.json` | **Windsurf** → `~/.codeium/windsurf/mcp_config.json`
+
+### MCP Tools
 
 | Tool | Description |
 |------|-------------|
-| `get_docs(service, topic)` | Fetch docs for a service + topic |
+| `get_docs(service, topic)` | Fetch docs — trimmed by default, `full=true` for complete |
 | `list_services()` | List all supported services |
 | `list_topics(service)` | Browse all topics for a service |
 | `search_topics(service, query)` | Search topics by keyword |
-
-Once configured, your AI assistant will automatically call `get_docs` when you ask questions like *"how do Stripe webhooks work?"*
-
----
-
-## Claude Code Skill (`/docs`)
-
-Install the skill for `/docs` slash command support:
-
-```bash
-# Copy skill to your Claude skills directory
-cp -r skill ~/.claude/skills/docs
-```
-
-Then in Claude Code:
-
-```
-/docs stripe webhooks
-/docs nextjs app-router
-/docs                    ← interactive mode
-```
 
 ---
 
@@ -155,20 +166,20 @@ Then in Claude Code:
 
 ### How it works
 
-1. **llms.txt strategy** — fetches official `llms.txt` index, fuzzy-matches topic against page titles, fetches the markdown URL directly (no scraping)
-2. **scrape strategy** — fetches HTML from the docs URL, extracts main content with cheerio, converts to markdown
+1. **llms.txt** — fetch official `llms.txt` index → fuzzy-match topic → fetch `.md` URL directly (no scraping)
+2. **scrape** — fetch HTML → extract main content via cheerio → convert to markdown
 
 ---
 
 ## Caching
 
-Docs are cached locally at `~/.quickdocs/cache/` for 24 hours. Use `--fresh` to bypass.
+Cached at `~/.quickdocs/cache/` for 24h. Use `--fresh` to bypass.
 
 ---
 
 ## Contributing
 
-Adding a new service is one object in [`src/registry/services.ts`](src/registry/services.ts):
+Add a service — one object in [`src/registry/services.ts`](src/registry/services.ts):
 
 ```typescript
 myservice: {
@@ -180,6 +191,8 @@ myservice: {
   description: 'What this service does',
 },
 ```
+
+PRs welcome.
 
 ---
 

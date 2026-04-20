@@ -35,6 +35,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             type: 'boolean',
             description: 'Skip cache and fetch fresh docs (default: false)',
           },
+          full: {
+            type: 'boolean',
+            description: 'Return full doc without trimming (default: false — returns relevant sections only)',
+          },
         },
         required: ['service', 'topic'],
       },
@@ -77,12 +81,13 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
   try {
     switch (name) {
       case 'get_docs': {
-        const { service, topic, fresh } = args as {
+        const { service, topic, fresh, full } = args as {
           service: string;
           topic: string;
           fresh?: boolean;
+          full?: boolean;
         };
-        const result = await getDocs(service, topic, { fresh });
+        const result = await getDocs(service, topic, { fresh, full });
         return {
           content: [
             {

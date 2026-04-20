@@ -24,7 +24,8 @@ program
   .description('Fetch documentation for a service and topic')
   .option('-f, --fresh', 'Skip cache, fetch fresh docs')
   .option('-l, --list', 'List/search available topics for this service')
-  .action(async (service?: string, topic?: string, opts?: { fresh?: boolean; list?: boolean }) => {
+  .option('--full', 'Show full doc, no trimming')
+  .action(async (service?: string, topic?: string, opts?: { fresh?: boolean; list?: boolean; full?: boolean }) => {
     // ── Interactive mode: no args ──
     if (!service) {
       await interactiveMode();
@@ -44,7 +45,7 @@ program
       return;
     }
 
-    await fetchAndPrint(service, topic, { fresh: opts?.fresh });
+    await fetchAndPrint(service, topic, { fresh: opts?.fresh, full: opts?.full });
   });
 
 // ─── quickdocs list ───────────────────────────────────────────────────────────
@@ -81,10 +82,10 @@ program
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function fetchAndPrint(service: string, topic: string, opts: { fresh?: boolean } = {}) {
+async function fetchAndPrint(service: string, topic: string, opts: { fresh?: boolean; full?: boolean } = {}) {
   const spinner = startSpinner(`Fetching ${service} docs for "${topic}"...`);
   try {
-    const result = await getDocs(service, topic, opts);
+    const result = await getDocs(service, topic, { fresh: opts.fresh, full: opts.full });
     stopSpinner(spinner);
 
     console.log(

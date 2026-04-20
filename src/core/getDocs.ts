@@ -2,6 +2,7 @@ import { findService, type ServiceConfig } from '../registry/services.js';
 import { fetchDocEntries, fuzzyMatch, topMatches, type DocEntry } from '../resolver/index.js';
 import { fetchMarkdownUrl } from '../fetcher/fetch.js';
 import { scrapeToMarkdown } from '../fetcher/extract.js';
+import { trimToRelevant } from './trim.js';
 import * as cache from '../cache/index.js';
 
 export interface DocResult {
@@ -22,7 +23,7 @@ export interface TopicMatch {
 export async function getDocs(
   serviceInput: string,
   topic: string,
-  opts: { fresh?: boolean } = {}
+  opts: { fresh?: boolean; full?: boolean } = {}
 ): Promise<DocResult> {
   const config = findService(serviceInput);
   if (!config) {
@@ -39,6 +40,12 @@ export async function getDocs(
   }
 
   const result = await fetchDocs(config, topic);
+
+  // Trim to relevant sections unless --full requested
+  if (!opts.full) {
+    result.content = trimToRelevant(result.content, topic);
+  }
+
   cache.set(cacheKey, result);
   return result;
 }

@@ -1,0 +1,41 @@
+{
+  "name": "quickdocs",
+  "version": "0.1.0",
+  "description": "Instant documentation fetcher for any service. CLI + MCP server. Powered by llms.txt.",
+  "type": "module",
+  "bin": {
+    "quickdocs": "./dist/cli/index.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli/index.ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["docs", "documentation", "mcp", "llms.txt", "cli", "developer-tools"],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "axios": "^1.7.0",
+    "cheerio": "^1.0.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "fuse.js": "^7.0.0",
+    "inquirer": "^9.3.0",
+    "turndown": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/turndown": "^5.0.5",
+    "@types/inquirer": "^9.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

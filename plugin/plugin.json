@@ -1,0 +1,23 @@
+{
+  "name": "quickdocs",
+  "version": "0.1.0",
+  "description": "Instant documentation fetcher. /docs stripe webhooks → docs in context. No AI tool calls.",
+  "author": {
+    "name": "Ayush Goyal",
+    "url": "https://github.com/ayuugoyal"
+  },
+  "homepage": "https://github.com/ayuugoyal/quickdocs",
+  "repository": "https://github.com/ayuugoyal/quickdocs",
+  "license": "MIT",
+  "keywords": ["docs", "documentation", "developer-tools", "llms.txt"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "QuickDocs",
+    "shortDescription": "Instant docs in context. /docs stripe webhooks",
+    "longDescription": "Fetches official documentation for 20+ services and injects directly into Claude context. Powered by llms.txt. No AI tool calls needed.",
+    "developerName": "Ayush Goyal",
+    "category": "Developer Tools",
+    "capabilities": ["Read"],
+    "websiteURL": "https://github.com/ayuugoyal/quickdocs"
+  }
+}

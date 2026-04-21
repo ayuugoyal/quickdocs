@@ -1,5 +1,5 @@
 {
-  "name": "quickdocs",
+  "name": "@ayuugoyal/quickdocs",
   "version": "0.1.0",
   "description": "Instant documentation fetcher for any service. CLI + MCP server. Powered by llms.txt.",
   "type": "module",

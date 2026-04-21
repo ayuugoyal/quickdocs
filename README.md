@@ -9,13 +9,13 @@ Powered by [llms.txt](https://llmstxt.org/). Works as a **CLI**, **MCP server** 
 ## Install
 
 ```bash
-npm install -g quickdocs
+npm install -g @ayuugoyal/quickdocs
 ```
 
 Or without installing:
 
 ```bash
-npx quickdocs stripe webhooks
+npx @ayuugoyal/quickdocs stripe webhooks
 ```
 
 ---
@@ -110,7 +110,7 @@ cp -r plugin/skill ~/.claude/skills/docs
 ## MCP Server (Claude Code / Cursor / Windsurf)
 
 ```bash
-claude mcp add-json quickdocs '{"command":"npx","args":["-y","quickdocs","mcp"]}'
+claude mcp add-json quickdocs '{"command":"npx","args":["-y","@ayuugoyal/quickdocs","mcp"]}'
 ```
 
 Or add to `.mcp.json`:
@@ -120,7 +120,7 @@ Or add to `.mcp.json`:
   "mcpServers": {
     "quickdocs": {
       "command": "npx",
-      "args": ["-y", "quickdocs", "mcp"]
+      "args": ["-y", "@ayuugoyal/quickdocs", "mcp"]
     }
   }
 }

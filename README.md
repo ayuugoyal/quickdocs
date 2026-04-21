@@ -141,33 +141,42 @@ Or add to `.mcp.json`:
 
 ## Supported Services
 
-| Service | Strategy | Aliases |
-|---------|----------|---------|
-| Stripe | llms.txt | `stripe` |
-| Vercel | llms.txt | `vercel` |
-| Next.js | llms.txt | `nextjs`, `next` |
-| Supabase | llms.txt | `supabase` |
-| Anthropic | llms.txt | `anthropic`, `claude` |
-| GitHub | llms.txt | `github`, `gh` |
-| Tailwind CSS | scrape | `tailwind`, `tw` |
-| React | scrape | `react`, `reactjs` |
-| Prisma | scrape | `prisma` |
-| Twilio | scrape | `twilio` |
-| MDN Web Docs | scrape | `mdn` |
-| AWS | scrape | `aws` |
-| Firebase | scrape | `firebase` |
-| OpenAI | scrape | `openai`, `gpt` |
-| Drizzle ORM | scrape | `drizzle` |
-| Clerk | scrape | `clerk` |
-| Resend | scrape | `resend` |
-| Neon | scrape | `neon` |
-| Upstash | scrape | `upstash` |
-| PlanetScale | scrape | `planetscale` |
+All services use the official `llms.txt` standard — no scraping.
+
+| Service | Aliases |
+|---------|---------|
+| Stripe | `stripe` |
+| Vercel | `vercel` |
+| Next.js | `nextjs`, `next` |
+| Supabase | `supabase` |
+| Anthropic | `anthropic`, `claude` |
+| GitHub | `github`, `gh` |
+| Drizzle ORM | `drizzle` |
+| Cloudflare | `cloudflare`, `cf` |
+| Docker | `docker` |
+| Astro | `astro` |
+| Svelte / SvelteKit | `svelte`, `sveltekit` |
+| Hono | `hono` |
+| Bun | `bun` |
+| Deno | `deno` |
+| Prisma | `prisma` |
+| Clerk | `clerk` |
+| Neon | `neon`, `neondb` |
+| Upstash | `upstash` |
+| Turso | `turso` |
+| shadcn/ui | `shadcn`, `shadcn-ui` |
+| Model Context Protocol | `mcp` |
+| Vercel AI SDK | `ai-sdk`, `aisdk` |
+| LangChain | `langchain` |
+| Turborepo | `turborepo`, `turbo` |
+| Replicate | `replicate` |
+| PostHog | `posthog` |
+| Cursor | `cursor` |
+| Better Auth | `better-auth` |
 
 ### How it works
 
-1. **llms.txt** — fetch official `llms.txt` index → fuzzy-match topic → fetch `.md` URL directly (no scraping)
-2. **scrape** — fetch HTML → extract main content via cheerio → convert to markdown
+Fetch official `llms.txt` index → fuzzy-match topic → fetch `.md` doc directly.
 
 ---
 
@@ -186,8 +195,8 @@ myservice: {
   name: 'My Service',
   aliases: ['myservice', 'ms'],
   baseUrl: 'https://docs.myservice.com',
-  llmsTxtUrl: 'https://docs.myservice.com/llms.txt', // if available
-  strategy: 'llmstxt', // or 'scrape'
+  llmsTxtUrl: 'https://docs.myservice.com/llms.txt',
+  strategy: 'llmstxt',
   description: 'What this service does',
 },
 ```
